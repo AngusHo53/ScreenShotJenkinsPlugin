@@ -69,10 +69,10 @@ public class ScreenShotBuilder extends Builder implements SimpleBuildStep {
   
   // --step 2--
   private void screenshotMethod(FilePath workspace, List<String> htmlFiles, TaskListener listener) throws IOException {
-    String screenshotPath = workspace + "/test/screenshot/";
+    String screenshotPath = workspace + "/target/screenshot/";
 
     String jobName = workspace.toString().substring(workspace.toString().lastIndexOf("/") + 1);
-    String driverGetPath = Jenkins.getInstance().getRootUrl() + "job/" + jobName + "/ws/test/screenshot/";
+    String driverGetPath = Jenkins.getInstance().getRootUrl() + "job/" + jobName + "/ws/target/screenshot/";
     // create screenshot folder
     File screenshotFolder = new File(screenshotPath);
     if (!screenshotFolder.exists()) {
@@ -88,16 +88,25 @@ public class ScreenShotBuilder extends Builder implements SimpleBuildStep {
       File screenshotFile = screenshot.getScreenshotAs(OutputType.FILE);
       FileUtils.copyFile(screenshotFile, new File(screenshotFolder + "/" + htmlFiles.get(i) + ".png"));
     }
-    listener.getLogger().println("save the screenshot png in test/screenshot/");
+    listener.getLogger().println("save the screenshot png in target/screenshot/");
     driver.quit();
   }
   // --step 2/--
 
+  // --step 3--
+  private void deleteHtmlFile(String screenshotPath, List<String> htmlFiles){
+    for (String file : htmlFiles){
+      File deleteFile = new File(screenshotPath + file + ".html");
+      deleteFile.delete();
+    }
+
+  }
+  // --step3/--
   @Override
   public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener)
       throws InterruptedException, IOException {
 
-    String screenshotPath = workspace + "/test/screenshot/";
+    String screenshotPath = workspace + "/target/screenshot/";
     String filePath = workspace + "/src";
     // step1: search all html file
     ArrayList htmlFiles = new ArrayList<>();
@@ -105,6 +114,9 @@ public class ScreenShotBuilder extends Builder implements SimpleBuildStep {
 
     // step2: screenshot method
     screenshotMethod(workspace, htmlFiles, listener);
+
+    // step3: delete html file in screenshot folder
+    deleteHtmlFile(screenshotPath,htmlFiles);
   }
 
   @Symbol("greet")
