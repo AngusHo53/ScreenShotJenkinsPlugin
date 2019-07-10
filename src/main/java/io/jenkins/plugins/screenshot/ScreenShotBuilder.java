@@ -27,6 +27,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.Dimension;
 
 public class ScreenShotBuilder extends Builder implements SimpleBuildStep {
 
@@ -82,6 +83,10 @@ public class ScreenShotBuilder extends Builder implements SimpleBuildStep {
     // screenshot method
     WebDriver driver = new RemoteWebDriver(new URL(seleniumUrl), DesiredCapabilities.chrome());
     for (int i = 0; i < htmlFiles.size(); i++) {
+      Dimension windowDimension = new Dimension(1920,3160);
+      driver.manage().window().maximize();
+      driver.manage().window().setSize(windowDimension);
+      driver.manage().window().fullscreen();
       String htmlFile = driverGetPath + htmlFiles.get(i) + HTML;
       driver.get(htmlFile);
       TakesScreenshot screenshot = ((TakesScreenshot) driver);
