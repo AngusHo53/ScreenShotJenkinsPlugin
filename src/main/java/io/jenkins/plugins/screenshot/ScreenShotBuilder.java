@@ -83,7 +83,7 @@ public class ScreenShotBuilder extends Builder implements SimpleBuildStep {
     // screenshot method
     WebDriver driver = new RemoteWebDriver(new URL(seleniumUrl), DesiredCapabilities.chrome());
     for (int i = 0; i < htmlFiles.size(); i++) {
-      Dimension windowDimension = new Dimension(1920,3160);
+      Dimension windowDimension = new Dimension(1920,2160);
       driver.manage().window().maximize();
       driver.manage().window().setSize(windowDimension);
       driver.manage().window().fullscreen();
